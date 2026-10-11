@@ -2,9 +2,16 @@
 
 # ---- build: compile client, SSR bundle and server ----
 FROM node:22-bookworm-slim AS build
+# Build tools are only needed if a native module (sharp, better-sqlite3) has to fall back
+# from its prebuilt binary to compiling from source.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 make g++ \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
+# The build needs devDependencies even when the platform injects NODE_ENV=production.
+ENV NODE_ENV=development
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
+RUN npm ci --include=dev --no-audit --no-fund
 COPY . .
 RUN npm run build && npm prune --omit=dev
 

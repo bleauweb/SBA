@@ -25,11 +25,14 @@ services:
     envs:
       - key: NODE_ENV
         value: production
+        scope: RUN_TIME
       - key: RETENTION_HOURS
         value: "24"
+        scope: RUN_TIME
       # Set the real value in the control panel (App > Settings > web > Environment Variables).
       # If it is left as the placeholder the server generates a random secret at boot, which
       # only means ownership cookies stop matching after a restart.
       - key: COOKIE_SECRET
         type: SECRET
+        scope: RUN_TIME
         value: CHANGE_ME
