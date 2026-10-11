@@ -1,0 +1,428 @@
+{
+  "specId": "toho-11-round",
+  "colors": [
+    {
+      "code": "41",
+      "name": "Opaque White",
+      "finish": "opaque",
+      "hex": "#f5f4ef",
+      "source": "name: Beadaholique/Perles&Co listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "42",
+      "name": "Opaque Dandelion",
+      "finish": "opaque",
+      "hex": "#f4c623",
+      "source": "name: Lima Beads code list; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "42B",
+      "name": "Opaque Sunset Orange",
+      "finish": "opaque",
+      "hex": "#f07a1c",
+      "source": "name: retailer listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "43",
+      "name": "Opaque Blue Turquoise",
+      "finish": "opaque",
+      "hex": "#2f8fbf",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "44",
+      "name": "Opaque Sour Apple",
+      "finish": "opaque",
+      "hex": "#9fcf3c",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "45",
+      "name": "Opaque Pepper Red",
+      "finish": "opaque",
+      "hex": "#c8202a",
+      "source": "name: Beadaholique listing (45F); hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "45A",
+      "name": "Opaque Cherry",
+      "finish": "opaque",
+      "hex": "#b5121b",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "46",
+      "name": "Opaque Oxblood",
+      "finish": "opaque",
+      "hex": "#6b1a1f",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "46L",
+      "name": "Opaque Terra Cotta",
+      "finish": "opaque",
+      "hex": "#b9573a",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "47",
+      "name": "Opaque Mint Green",
+      "finish": "opaque",
+      "hex": "#7fc9a6",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "47D",
+      "name": "Opaque Shamrock",
+      "finish": "opaque",
+      "hex": "#2f8f4e",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "47H",
+      "name": "Opaque Pine Green",
+      "finish": "opaque",
+      "hex": "#1f5a3c",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "48",
+      "name": "Opaque Navy Blue",
+      "finish": "opaque",
+      "hex": "#1c2b5a",
+      "source": "name: eBay/Artbeads listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "48L",
+      "name": "Opaque Periwinkle",
+      "finish": "opaque",
+      "hex": "#7b8fd0",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "49",
+      "name": "Opaque Jet",
+      "finish": "opaque",
+      "hex": "#121212",
+      "source": "name: Beadaholique/Amazon listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "51",
+      "name": "Opaque Lt Beige",
+      "finish": "opaque",
+      "hex": "#e8d5b0",
+      "source": "name: Beadaholique listing; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "52",
+      "name": "Opaque Lavender",
+      "finish": "opaque",
+      "hex": "#b7a0d6",
+      "source": "name: Lima Beads code list (52F); hex approx"
+    },
+    {
+      "code": "53",
+      "name": "Opaque Gray",
+      "finish": "opaque",
+      "hex": "#8f9094",
+      "source": "name: Beadaholique listing; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "55",
+      "name": "Opaque Turquoise",
+      "finish": "opaque",
+      "hex": "#2fb6b0",
+      "source": "name: Beadaholique listing; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "41F",
+      "name": "Opaque Frosted White",
+      "finish": "matte",
+      "hex": "#f2f1ec",
+      "source": "name: Beadaholique listing; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "42F",
+      "name": "Opaque Frosted Dandelion",
+      "finish": "matte",
+      "hex": "#efc62e",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "43F",
+      "name": "Opaque Frosted Blue Turquoise",
+      "finish": "matte",
+      "hex": "#3b93bd",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "44F",
+      "name": "Opaque Frosted Sour Apple",
+      "finish": "matte",
+      "hex": "#a3cc48",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "45F",
+      "name": "Opaque Frosted Pepper Red",
+      "finish": "matte",
+      "hex": "#c6262e",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "46F",
+      "name": "Opaque Frosted Oxblood",
+      "finish": "matte",
+      "hex": "#6f2125",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "47F",
+      "name": "Opaque Frosted Mint Green",
+      "finish": "matte",
+      "hex": "#85c8a8",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "48F",
+      "name": "Opaque Frosted Navy Blue",
+      "finish": "matte",
+      "hex": "#22305c",
+      "source": "name: Artbeads listing; hex approx"
+    },
+    {
+      "code": "49F",
+      "name": "Opaque Frosted Jet",
+      "finish": "matte",
+      "hex": "#171717",
+      "source": "name: Beadaholique listing; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "51F",
+      "name": "Opaque Frosted Lt Beige",
+      "finish": "matte",
+      "hex": "#e6d4b2",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "52F",
+      "name": "Opaque Frosted Lavender",
+      "finish": "matte",
+      "hex": "#b4a1d2",
+      "source": "name: Lima Beads code list; hex approx"
+    },
+    {
+      "code": "53F",
+      "name": "Opaque Frosted Gray",
+      "finish": "matte",
+      "hex": "#8d8e92",
+      "source": "name: eBay listing; hex approx"
+    },
+    {
+      "code": "55F",
+      "name": "Opaque Frosted Turquoise",
+      "finish": "matte",
+      "hex": "#3ab4ae",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "611",
+      "name": "Matte Opaque Gray",
+      "finish": "matte",
+      "hex": "#7f8084",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "761",
+      "name": "Matte Opaque Chalk White",
+      "finish": "matte",
+      "hex": "#eeede8",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "121",
+      "name": "Opaque Lustered White",
+      "finish": "luster",
+      "hex": "#f7f6f2",
+      "source": "name: Beadaholique/Amazon listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "122",
+      "name": "Opaque Lustered Navajo White",
+      "finish": "luster",
+      "hex": "#efe3cf",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "126",
+      "name": "Opaque Lustered Baby Pink",
+      "finish": "luster",
+      "hex": "#f3c3cf",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "141",
+      "name": "Ceylon Snowflake",
+      "finish": "ceylon",
+      "hex": "#f6f4ee",
+      "source": "name: i-beads/eBay listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "143",
+      "name": "Ceylon Aqua",
+      "finish": "ceylon",
+      "hex": "#9fd8d6",
+      "source": "name: i-beads listing; hex approx"
+    },
+    {
+      "code": "145",
+      "name": "Ceylon Innocent Pink",
+      "finish": "ceylon",
+      "hex": "#f2c9cf",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "146",
+      "name": "Ceylon Glacier",
+      "finish": "ceylon",
+      "hex": "#a9c9e6",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "147",
+      "name": "Ceylon Lt Ivory",
+      "finish": "ceylon",
+      "hex": "#f1e8d4",
+      "source": "name: Beadaholique listing; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "148",
+      "name": "Ceylon Peach Cobbler",
+      "finish": "ceylon",
+      "hex": "#f3c6a8",
+      "source": "name: i-beads listing; hex approx"
+    },
+    {
+      "code": "401",
+      "name": "Opaque Rainbow Jet",
+      "finish": "ab",
+      "hex": "#1e1d22",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "413",
+      "name": "Opaque Rainbow Turquoise",
+      "finish": "ab",
+      "hex": "#3bb3b5",
+      "source": "name: Beadaholique listing; hex approx"
+    },
+    {
+      "code": "1",
+      "name": "Transparent Crystal",
+      "finish": "transparent",
+      "hex": "#e9e9e6",
+      "source": "name: Beadaholique listing; hex approx (on-thread colour depends on thread)",
+      "michaelsCommon": true
+    },
+    {
+      "code": "3",
+      "name": "Transparent Aquamarine",
+      "finish": "transparent",
+      "hex": "#9fd4e6",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "5B",
+      "name": "Transparent Siam Ruby",
+      "finish": "transparent",
+      "hex": "#9b1a2a",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "7B",
+      "name": "Transparent Grass Green",
+      "finish": "transparent",
+      "hex": "#3c8f3a",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "8",
+      "name": "Transparent Cobalt",
+      "finish": "transparent",
+      "hex": "#1f3f9a",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "21",
+      "name": "Silver-Lined Crystal",
+      "finish": "silver-lined",
+      "hex": "#dcdcdc",
+      "source": "name: retailer listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "23",
+      "name": "Silver-Lined Aquamarine",
+      "finish": "silver-lined",
+      "hex": "#8fcadf",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "27",
+      "name": "Silver-Lined Peridot",
+      "finish": "silver-lined",
+      "hex": "#9fcc4a",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "28",
+      "name": "Silver-Lined Cobalt",
+      "finish": "silver-lined",
+      "hex": "#2b4aa8",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "29",
+      "name": "Silver-Lined Black Diamond",
+      "finish": "silver-lined",
+      "hex": "#8a8a8e",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "221",
+      "name": "Bronze",
+      "finish": "metallic",
+      "hex": "#8c5a2b",
+      "source": "name: retailer listings; hex approx",
+      "michaelsCommon": true
+    },
+    {
+      "code": "222",
+      "name": "Dark Bronze",
+      "finish": "metallic",
+      "hex": "#5e3a1f",
+      "source": "name: retailer listings; hex approx"
+    },
+    {
+      "code": "711",
+      "name": "Nickel",
+      "finish": "metallic",
+      "hex": "#9a9ca0",
+      "source": "name: Beadaholique listing; hex approx"
+    }
+  ]
+}
