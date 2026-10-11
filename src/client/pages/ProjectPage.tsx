@@ -5,6 +5,7 @@ import { Chart } from '../components/chart/Chart';
 import { Legend, MaterialsTable } from '../components/chart/Legend';
 import { PatternStats } from '../components/PatternSummary';
 import { SettingsForm } from '../components/editor/SettingsForm';
+import { useFitCellPx } from '../components/chart/useFitCellPx';
 
 type Data = Extract<PageData, { page: 'project' }>;
 
@@ -18,7 +19,7 @@ export function ProjectPage({ data }: { data: Data }) {
   const [highlight, setHighlight] = useState<number | null>(null);
   const [shareUrl, setShareUrl] = useState('');
   const [title, setTitle] = useState(project.title);
-  const [cellPx, setCellPx] = useState(14);
+  const { ref: chartRef, cellPx, setCellPx } = useFitCellPx(pattern?.width ?? 60);
 
   useEffect(() => {
     setShareUrl(window.location.origin + `/projects/${project.id}`);
@@ -70,24 +71,25 @@ export function ProjectPage({ data }: { data: Data }) {
   }
 
   const canEdit = data.canEdit;
+  const generateLabel = busy ?? (pattern ? (dirty ? 'Regenerate pattern' : 'Pattern is up to date') : 'Generate pattern');
 
   return (
     <>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 12 }}>
+      <div className="page-head">
         {canEdit ? (
           <input
             type="text"
+            className="title-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={saveTitle}
             maxLength={120}
             aria-label="Project title"
-            style={{ fontSize: 20, fontWeight: 600, border: '1px solid transparent', background: 'transparent', padding: '4px 6px', borderRadius: 6, minWidth: 280 }}
           />
         ) : (
           <h2>{project.title}</h2>
         )}
-        <div className="row">
+        <div className="row head-actions">
           {pattern && (
             <a className="btn primary" href={`/api/patterns/${pattern.id}/guide.pdf`} target="_blank" rel="noreferrer">
               Download PDF guide
@@ -104,7 +106,7 @@ export function ProjectPage({ data }: { data: Data }) {
       )}
 
       <div className="editor">
-        <aside className="card">
+        <aside className="card editor-side">
           <h3 style={{ marginTop: 0 }}>Photo</h3>
           <img src={project.workingImageUrl} alt="" style={{ width: '100%', borderRadius: 6, border: '1px solid var(--line)' }} />
           <p className="muted" style={{ fontSize: 13 }}>
@@ -116,8 +118,8 @@ export function ProjectPage({ data }: { data: Data }) {
 
           {canEdit && (
             <>
-              <button className="btn primary" type="button" onClick={generate} disabled={busy !== null} style={{ width: '100%', marginTop: 8 }}>
-                {busy ?? (pattern ? (dirty ? 'Regenerate pattern' : 'Pattern is up to date') : 'Generate pattern')}
+              <button className="btn primary side-generate" type="button" onClick={generate} disabled={busy !== null} style={{ width: '100%', marginTop: 8 }}>
+                {generateLabel}
               </button>
               {error && <div className="error">{error}</div>}
               <p className="share muted" style={{ marginTop: 14 }}>
@@ -133,18 +135,19 @@ export function ProjectPage({ data }: { data: Data }) {
           )}
         </aside>
 
-        <section>
+        <section className="editor-main">
+          {error && canEdit && <div className="error">{error}</div>}
           {pattern ? (
             <>
               <PatternStats pattern={pattern} />
               <div className="row" style={{ justifyContent: 'space-between' }}>
                 <Legend pattern={pattern} highlight={highlight} onToggle={setHighlight} />
-                <label className="field" style={{ margin: 0, minWidth: 140 }}>
+                <label className="field zoom" style={{ margin: 0 }}>
                   <span>Zoom</span>
                   <input type="range" min={4} max={30} value={cellPx} onChange={(e) => setCellPx(Number(e.target.value))} />
                 </label>
               </div>
-              <div className="chart-wrap" style={{ marginTop: 12 }}>
+              <div className="chart-wrap" style={{ marginTop: 12 }} ref={chartRef}>
                 <Chart pattern={pattern} cellPx={cellPx} highlight={highlight} />
               </div>
               {dirty && canEdit && <p className="muted">Settings changed since this pattern was generated. Click Regenerate to update it.</p>}
@@ -152,13 +155,27 @@ export function ProjectPage({ data }: { data: Data }) {
               <MaterialsTable pattern={pattern} />
             </>
           ) : (
-            <div className="card">
+            <div className="card" ref={chartRef}>
               <h3 style={{ marginTop: 0 }}>No pattern yet</h3>
               <p className="muted">Adjust the settings and click Generate pattern. It takes about a second.</p>
             </div>
           )}
         </section>
       </div>
+
+      {canEdit && <div className="action-bar-spacer" />}
+      {canEdit && (
+        <div className="action-bar">
+          <button className="btn primary" type="button" onClick={generate} disabled={busy !== null}>
+            {generateLabel}
+          </button>
+          {pattern && (
+            <a className="btn" href={`/api/patterns/${pattern.id}/guide.pdf`} target="_blank" rel="noreferrer">
+              PDF guide
+            </a>
+          )}
+        </div>
+      )}
     </>
   );
 }
