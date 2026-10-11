@@ -1,0 +1,54 @@
+{
+  "name": "sba",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Seed Bead Art: turn a photo into a seed bead pixel-art pattern and printable guide",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "npm run build:client && npm run build:ssr && npm run build:server",
+    "build:client": "vite build --outDir dist/client",
+    "build:ssr": "vite build --ssr src/client/entry-server.tsx --outDir dist/ssr",
+    "build:server": "nest build",
+    "start": "NODE_ENV=production node dist/server/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.client.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.2.7",
+    "@nestjs/core": "^11.2.7",
+    "@nestjs/platform-express": "^11.2.7",
+    "@nestjs/schedule": "^6.0.0",
+    "@react-pdf/renderer": "^4.9.0",
+    "better-sqlite3": "^13.0.3",
+    "cookie-parser": "^1.4.7",
+    "drizzle-orm": "^0.45.4",
+    "express": "^5.2.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "sharp": "^0.35.5",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.24",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.0",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "drizzle-kit": "^0.31.11",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.7",
+    "vitest": "^3.2.7"
+  }
+}

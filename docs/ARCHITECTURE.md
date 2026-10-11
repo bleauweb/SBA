@@ -6,7 +6,11 @@ and weight estimates, finished dimensions, a row-by-row reading of the pattern, 
 getting-started page for the recommended technique.
 
 **Stack:** NestJS (API + SSR host) · React 19 server-side rendered via Vite · sharp (libvips) for
-image work · Prisma + PostgreSQL · `@react-pdf/renderer` for PDF output.
+image work · Drizzle ORM + SQLite (PostgreSQL later via drizzle's pg driver) · `@react-pdf/renderer`
+for PDF output.
+
+> **Status:** Phase 1 is implemented. Sections below describe the system as built; where the
+> implementation diverged from the original plan the change is noted inline.
 
 **Product constraints (decided):**
 - **No accounts.** Anyone can upload a photo and get a guide. A browser cookie remembers that
@@ -117,8 +121,10 @@ finishes have unreliable reference colors and look different on thread, so "opaq
 ceylon only" is the beginner default), and the optional per-project bead selection.
 
 ### 3.5 Symbol assignment & legend (`legend/`)
-- Each used bead gets a printable symbol (ordered set of high-contrast glyphs: `● ■ ▲ ◆ ✚ ★ …`,
-  then letters). Symbols are chosen so the chart is readable when printed in black and white.
+- Each used bead gets a printable symbol: letters and digits in an order that keeps the
+  most-used colours on the most distinct glyphs, skipping look-alikes (I/l/1, O/0). Using
+  ASCII only means the PDF can rely on its built-in Helvetica and needs no embedded font.
+  (Changed from the original plan to use geometric glyphs.)
 - Legend entry: `{ symbol, bead, count, grams, tubes, textColor }` where `textColor` is black/white
   chosen by luminance so the symbol is visible on the swatch.
 
@@ -140,7 +146,7 @@ interface Pattern {
   beadSpec: { id: string; brand: string; line: string; size: string;
               cellWidthMm: number; cellHeightMm: number; beadsPerGram: number; packageGrams: number };
   width: number; height: number;          // in beads
-  cells: Uint8Array | number[];           // row-major, index into legend
+  cells: number[];                        // row-major, index into legend (stored as a BLOB)
   legend: LegendEntry[];                  // ordered by count desc
   totals: { beads: number; grams: number; widthMm: number; heightMm: number };
   settings: GenerationSettings;           // frozen copy used to produce this version
@@ -203,7 +209,7 @@ test/
 |---|---|---|
 | `projects` | `ProjectsController`, `ProjectsService`, `BrowserIdentity` | `POST /api/projects` (multipart image) creates a project with default settings and records the browser id. `PATCH /api/projects/:id/settings` validates with zod. `GET /api/projects` lists this browser's projects. |
 | `images` | `ImageStorage` (interface), `LocalImageStorage`, `S3ImageStorage` | Stores original + a 1024px working copy + thumbnail. Everything downstream reads the working copy. |
-| `palettes` | `PalettesService`, `BeadCatalogLoader` | Seeds `BeadColor`/`BeadSpec` rows from `data/beads/*.json` on boot (idempotent upsert by brand+line+size+code). Precomputes Lab. |
+| `palettes` | `PalettesService` | Loads `data/beads/*.json` into memory on boot and precomputes Lab. The catalogue is small and read-only, so it never touches the database (changed from the planned DB tables). |
 | `patterns` | `PatternsController`, `PatternsService`, `PatternGenerator` | `POST /api/projects/:id/patterns` runs the pipeline and stores a new immutable version. `GET /api/patterns/:id` returns JSON. Also `GET …/preview.png` (sharp renders the cell grid upscaled) for thumbnails. |
 | `guides` | `GuidesController`, `GuidesService` | `GET /api/patterns/:id/guide.pdf`. Renders with `@react-pdf/renderer`, stores the result in `ImageStorage` keyed by pattern id so it's generated once. |
 | `render` | `RenderController`, `SsrService` | Catch-all GET for non-`/api` paths. Resolves route → loader → `renderToPipeableStream`. Injects serialized loader data for hydration. |
@@ -248,10 +254,10 @@ frameworks' routers and build systems, and the app only has a handful of pages.
   adapter. `entry-server.tsx` is loaded with `vite.ssrLoadModule` for HMR.
 - **Prod:** `vite build` produces `dist/client` (assets, manifest) and `dist/server/entry-server.js`.
   Nest serves `dist/client` statically and imports the server entry once.
-- **Rendering:** `renderToPipeableStream` with a `<Suspense>` shell so the page paints before the
-  chart data arrives. Loader data is serialized into `<script id="__DATA__">` and read on hydrate.
-- **Routing:** a small route table (path pattern → page component + loader). React Router's data
-  APIs are an acceptable alternative; the table is kept tiny deliberately.
+- **Rendering:** `renderToString`; the pages are small and the loader data is already in hand, so
+  streaming buys nothing yet. Loader data is serialized into `window.__DATA__` and read on hydrate.
+- **Routing:** three routes matched by regex in `RenderController`; the client switches on the
+  page kind in `App.tsx`. Navigation between pages is a full page load. No client router yet.
 - **Chart rendering in the browser:** `<Chart>` is an SVG of `<rect>`s + `<text>` symbols. Patterns
   above ~20k cells switch to a `<canvas>` renderer behind the same props. Hover shows bead
   code/name; click toggles "highlight this color", which is the main way beaders check a chart.
@@ -295,7 +301,13 @@ produces a new version and a new PDF.
 
 ---
 
-## 7. Data model (Prisma / PostgreSQL)
+## 7. Data model (Drizzle / SQLite)
+
+Implemented with Drizzle ORM on SQLite (`src/db/schema.ts`, migrations in `drizzle/`). SQLite
+needs no server and is plenty for a single instance; the schema uses only portable column types
+so moving to PostgreSQL means swapping the driver and regenerating the migration. Bead colours
+and specs are not in the database (see §4.1). The schema below is the original Prisma sketch,
+kept for readability; the Drizzle schema matches it apart from the catalogue tables.
 
 ```prisma
 model Project {
@@ -361,10 +373,10 @@ Settings shape (stored as JSON, validated with zod on input and reused by the cl
 interface GenerationSettings {
   crop: { x: number; y: number; w: number; h: number };          // normalized 0–1
   widthBeads: number;                                            // 10–400
-  stitch: 'square';                                              // 'peyote' | 'brick' added in Phase 2
+  stitch: 'square';                                              // 'peyote' | 'brick' added in Phase 3
   beadSpecId: string;                                            // default "toho-11-round"
   maxColors: number;                                             // 2–60, default 12
-  finishes: string[];                                            // default ['opaque','matte','ceylon']
+  finishes: string[];                                            // default ['opaque','matte','ceylon','luster']
   selectedBeadIds?: string[];                                    // "only use these beads"; undefined = whole line
   calibration?: { tenBeadsWidthMm: number; tenRowsHeightMm: number }; // overrides spec geometry
   dither: boolean;                                               // default false
@@ -412,13 +424,15 @@ upload and generate, a cap on live projects per browser, and the expiry job.
 | Default technique | Square grid, loom (or square stitch) | Chart is literally the picture, fastest stitch, looms sold at Michaels; easiest for a first-timer | Peyote as default (offset grid is harder to read from a photo chart) |
 | First bead catalog | Toho 11/0 round | Sold at Michaels under real product codes; well-documented colors | Bead Landing (house brand, no stable codes), Delica first (mostly online) |
 | SSR approach | Vite SSR inside Nest | One process, one router, HMR in dev, few pages | Next.js inside Nest (two frameworks fighting), Remix |
+| Dev/prod SSR | Vite middleware in dev; prebuilt `dist/ssr/entry-server.mjs` in prod | Same entry, no duplication; prod needs no Vite at runtime | Running Vite in prod |
 | PDF engine | `@react-pdf/renderer` | No browser, deterministic, React components, same `Pattern` type | Playwright print (heavy, nondeterministic breaks), PDFKit (too low level) |
 | Image library | `sharp` | Fast libvips, HEIC/EXIF handling, raw buffers | Jimp (slow, pure JS) |
 | Color matching | k-means in Lab + ΔE2000 snap to catalog | Readable patterns, few stray colors | Direct per-pixel nearest-bead (noisy), median cut in RGB (poor perceptual results) |
 | Pattern storage | Immutable versions, bytes inline | Reproducible guides, cheap to diff/undo | Mutating a single pattern row |
 | Async jobs | Synchronous behind a `JobRunner` interface | Sub-second generation; avoids Redis on day one | BullMQ from the start |
-| DB | Prisma + PostgreSQL (SQLite in tests) | Typed, migrations, JSON columns | TypeORM, raw SQL |
-| Catalog data | JSON files in repo, seeded on boot | Reviewable in PRs, easy calibration | Hand-entered DB rows |
+| DB | Drizzle + SQLite (PostgreSQL later) | Zero infrastructure, typed schema, JSON/BLOB columns, no engine download | Prisma (no JSON on SQLite, engine binaries), TypeORM |
+| Catalog data | JSON files in repo, loaded into memory on boot | Reviewable in PRs, easy calibration, no seeding step | DB tables |
+| Chart symbols | Letters and digits | Built-in PDF fonts, identical on web and paper | Geometric glyphs (need an embedded font) |
 
 ---
 
@@ -438,16 +452,17 @@ upload and generate, a cap on live projects per browser, and the expiry job.
 
 ## 11. Delivery phases
 
-**Phase 1 — Core (MVP)**
+**Phase 1 — Core (MVP) — done**
 Nest + Vite SSR skeleton; upload; browser-cookie projects; square/loom layout; Toho 11/0 round
-catalog (opaque/matte/ceylon finishes first); k-means + ΔE2000; despeckle; web chart with
-highlight; PDF with cover, getting-started page, materials, overview, working chart, word chart;
-expiry job.
+catalogue (58 colours, all finishes, opaque/matte/ceylon/luster on by default); k-means +
+ΔE2000; despeckle; dither option; image adjustments; calibration fields; "Michaels in-store
+colours only" preset; web chart with highlight and zoom; PDF with cover, getting-started page,
+materials, overview, working chart, word chart; Letter/A4; expiry job; rate limiting.
 
 **Phase 2 — Quality**
-Crop tool; image adjustments; dither option; calibration fields; "only these beads" picker with
-localStorage memory; Miyuki 11/0 round and Delica 11/0 catalogs; Letter/A4; pattern version
-history and compare.
+Crop tool; per-colour bead picker with localStorage memory; sampled (not estimated) catalogue
+colours; Miyuki 11/0 round and Delica 11/0 catalogues; pattern version history and compare;
+canvas chart renderer for very large patterns.
 
 **Phase 3 — More techniques**
 Peyote and brick layouts with their own word-chart formats and getting-started pages; square

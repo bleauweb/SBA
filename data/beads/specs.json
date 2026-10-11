@@ -1,0 +1,14 @@
+[
+  {
+    "id": "toho-11-round",
+    "brand": "Toho",
+    "line": "Round",
+    "size": "11/0",
+    "cellWidthMm": 1.45,
+    "cellHeightMm": 2.1,
+    "beadsPerGram": 110,
+    "packageGrams": 8,
+    "whereToBuy": "Michaels (in store and online), Amazon, Beadaholique, Fire Mountain Gems",
+    "notes": "Cell geometry is a starting estimate for loom work (hole-to-hole width × bead diameter). Measure a 10×10 swatch and use calibration for accurate finished sizes."
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["es2023", "dom"],
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "dist/server",
+    "rootDir": "src",
+    "strict": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "incremental": false,
+    "types": ["node", "multer"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/client/**", "src/**/*.test.ts", "src/**/*.test.tsx", "dist", "node_modules"]
+}
