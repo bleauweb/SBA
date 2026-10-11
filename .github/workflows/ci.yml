@@ -20,3 +20,5 @@ jobs:
       - run: npm run build
       - name: Docker image builds
         run: docker build -t sba:ci .
+      - name: Smoke test the container
+        run: scripts/smoke-test.sh sba:ci
