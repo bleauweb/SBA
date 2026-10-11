@@ -35,6 +35,9 @@ export function HomePage({ data }: { data: Data }) {
         <p className="muted">
           Upload a picture, pick how wide the piece should be in beads and how many colours you want, and download a printable guide with the chart, the bead counts and a row-by-row word chart. No account needed.
         </p>
+        <p className="muted">
+          Nothing is kept for long: projects and photos are deleted after about a day, and there are no backups. Download the PDF guide when you're happy with the pattern.
+        </p>
         <form onSubmit={onSubmit}>
           <label className="field">
             <span>Photo (JPEG, PNG, WebP or HEIC, up to 20 MB)</span>
@@ -63,7 +66,7 @@ export function HomePage({ data }: { data: Data }) {
       {data.recent.length > 0 && (
         <>
           <h3>Your recent projects</h3>
-          <p className="muted">Remembered by this browser. Each project's link also works anywhere.</p>
+          <p className="muted">Remembered by this browser for about a day. Download the PDF to keep a pattern.</p>
           <div className="grid">
             {data.recent.map((p) => (
               <a key={p.id} className="thumb" href={`/projects/${p.id}`}>

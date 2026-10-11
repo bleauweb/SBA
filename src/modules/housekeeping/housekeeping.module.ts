@@ -12,10 +12,10 @@ export class ExpiryService {
     @Inject(CONFIG) private readonly cfg: AppConfig,
   ) {}
 
-  /** Nightly at 03:17 server time: drop projects nobody has opened in RETENTION_DAYS. */
-  @Cron('17 3 * * *')
+  /** Every hour: drop projects nobody has opened in RETENTION_HOURS. */
+  @Cron('7 * * * *')
   async run() {
-    const n = await this.projects.deleteExpired(this.cfg.retentionDays);
+    const n = await this.projects.deleteExpired(this.cfg.retentionHours);
     if (n > 0) this.log.log(`deleted ${n} expired project(s)`);
   }
 }

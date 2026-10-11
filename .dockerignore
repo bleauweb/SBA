@@ -1,0 +1,10 @@
+node_modules
+dist
+var
+*.sqlite*
+.git
+.github
+.env
+docs
+test
+coverage

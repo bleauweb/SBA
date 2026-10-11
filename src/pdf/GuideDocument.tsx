@@ -168,7 +168,7 @@ export function GuideDocument({ pattern, projectTitle, projectUrl, previewDataUr
         <View style={styles.kv}><Text style={styles.k}>Total beads</Text><Text>{t.beads.toLocaleString()} ({t.grams.toFixed(1)} g) in {pattern.legend.length} colours</Text></View>
         <View style={styles.kv}><Text style={styles.k}>Project link</Text><Text>{projectUrl}</Text></View>
         <Text style={[styles.p, styles.small, { marginTop: 14 }]}>
-          Keep this link: there are no accounts, so the link is the only way back to this project. Projects are removed after a long period without visits.
+          This PDF is the keepsake. The project link above works for about a day, then the project and photo are deleted; there are no accounts or backups.
         </Text>
         <Footer title={footerTitle} pageLabel="Cover" />
       </Page>

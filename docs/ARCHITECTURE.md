@@ -13,9 +13,10 @@ for PDF output.
 > implementation diverged from the original plan the change is noted inline.
 
 **Product constraints (decided):**
-- **No accounts.** Anyone can upload a photo and get a guide. A browser cookie remembers that
-  browser's projects; the project URL itself is the share link. Projects expire after a period of
-  inactivity.
+- **No accounts, no retained data.** Anyone can upload a photo and get a guide. A browser cookie
+  remembers that browser's projects; the project URL itself is the share link. Projects, photos and
+  PDFs are deleted after about a day and are never backed up: the PDF is the keepsake. This keeps
+  the app free of user-data management and lets it run on ephemeral disk.
 - **Beginner-first technique.** The default and only Phase 1 layout is a square grid, beaded on a
   **loom** (or square stitch, which produces the same grid without a loom). Peyote and brick come later.
 - **Beads you can buy at Michaels.** The first catalog is **Toho 11/0 round** seed beads, which
@@ -33,7 +34,8 @@ for PDF output.
 3. **Preview** the generated pattern live in the browser; tweak settings; re-generate.
 4. **Export** a PDF guide: cover + preview, getting-started page, materials list with counts,
    overview chart, paginated working chart, row-by-row word chart.
-5. **Come back later** from the same browser (cookie) or via the project link.
+5. **Come back within a day** from the same browser (cookie) or via the project link; after that
+   the project is gone.
 
 Pattern generation is deterministic: the same image + settings always yields the same pattern,
 so previews and PDFs never disagree.
@@ -213,7 +215,8 @@ test/
 | `patterns` | `PatternsController`, `PatternsService`, `PatternGenerator` | `POST /api/projects/:id/patterns` runs the pipeline and stores a new immutable version. `GET /api/patterns/:id` returns JSON. Also `GET …/preview.png` (sharp renders the cell grid upscaled) for thumbnails. |
 | `guides` | `GuidesController`, `GuidesService` | `GET /api/patterns/:id/guide.pdf`. Renders with `@react-pdf/renderer`, stores the result in `ImageStorage` keyed by pattern id so it's generated once. |
 | `render` | `RenderController`, `SsrService` | Catch-all GET for non-`/api` paths. Resolves route → loader → `renderToPipeableStream`. Injects serialized loader data for hydration. |
-| `housekeeping` | `ExpiryJob` (`@nestjs/schedule`) | Nightly: delete projects whose `lastAccessedAt` is older than the retention window (default 60 days), including stored images and PDFs. |
+| `housekeeping` | `ExpiryService` (`@nestjs/schedule`) | Hourly: delete projects whose `lastAccessedAt` is older than `RETENTION_HOURS` (default 24), including stored images and PDFs. |
+| `health` | `HealthController` | `GET /api/health` for the platform health check. |
 
 ### 4.2 Account-less ownership
 
@@ -222,10 +225,10 @@ test/
   require a matching cookie. Reads need only the project id, which is a 128-bit random
   unguessable string, so the URL doubles as a share link.
 - The home page lists "your recent projects" from the cookie. Clearing cookies loses the list but
-  not the projects; the user can still open them by link. The guide PDF prints the project link
-  on the cover for exactly this reason.
+  not the projects; the user can still open them by link while they exist.
 - No personal data is collected. Uploaded photos are kept only to allow re-generation and are
-  deleted with the project.
+  deleted with the project. Retention is `RETENTION_HOURS` (default 24) since last access,
+  enforced hourly, and a deploy wipes everything regardless. The UI and the PDF cover say so.
 
 ### 4.3 Request flow for the editor page
 
@@ -421,6 +424,8 @@ upload and generate, a cap on live projects per browser, and the expiry job.
 | Decision | Choice | Why | Rejected |
 |---|---|---|---|
 | Accounts | None; signed browser cookie + unguessable project ids | Zero friction for a hobby tool; no PII to protect | Email/OAuth login, magic links |
+| Data retention | Ephemeral: ~24 h, deleted on deploy, no backups | Nothing to manage or protect; the PDF is the deliverable | Persistent projects (needs Postgres + object storage + backups) |
+| Hosting | DigitalOcean App Platform, one instance, Dockerfile build, deploy on push to `main` | Native GitHub CD, no server to run; ephemeral disk is fine given the retention decision | Droplet + Docker (persistent disk, more ops) |
 | Default technique | Square grid, loom (or square stitch) | Chart is literally the picture, fastest stitch, looms sold at Michaels; easiest for a first-timer | Peyote as default (offset grid is harder to read from a photo chart) |
 | First bead catalog | Toho 11/0 round | Sold at Michaels under real product codes; well-documented colors | Bead Landing (house brand, no stable codes), Delica first (mostly online) |
 | SSR approach | Vite SSR inside Nest | One process, one router, HMR in dev, few pages | Next.js inside Nest (two frameworks fighting), Remix |
@@ -469,14 +474,16 @@ Peyote and brick layouts with their own word-chart formats and getting-started p
 stitch instructions as a loom-less alternative; shopping list export (CSV).
 
 **Phase 4 — Scale (only if needed)**
-BullMQ worker for PDF/pattern jobs; S3 storage; CDN for previews.
+More than one instance would need shared state: Managed PostgreSQL via drizzle's pg driver and
+Spaces (S3) behind `ImageStorage`, plus a BullMQ worker for PDF/pattern jobs. Not planned while
+data stays ephemeral and a single 1 GB instance keeps up.
 
 ---
 
 ## 12. Decisions made with the product owner
 
-1. **Account-less.** See §4.2. Retention window defaults to 60 days since last access; the
-   cover page prints the project link so a guide can always be found again.
+1. **Account-less and ephemeral.** See §4.2. Retention is about a day; the cover page prints the
+   project link for the short term and tells the reader the PDF is the keepsake.
 2. **Technique.** The owner is new to beading, so the app recommends loom beading and ships a
    getting-started page. The architecture keeps a `StitchLayout` abstraction so peyote/brick can
    be added without touching the pipeline.

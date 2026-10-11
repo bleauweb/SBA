@@ -124,7 +124,7 @@ export function ProjectPage({ data }: { data: Data }) {
                 Share or bookmark: <br />
                 <a href={shareUrl}>{shareUrl || `/projects/${project.id}`}</a>
                 <br />
-                There are no accounts; this browser remembers the project, and the link works anywhere.
+                The link works anywhere for about a day, then the project and photo are deleted. Download the PDF to keep the pattern.
               </p>
               <button className="btn danger" type="button" onClick={remove} disabled={busy !== null} style={{ marginTop: 8 }}>
                 Delete project

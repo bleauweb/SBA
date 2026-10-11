@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
 import { DbModule } from './db/db.module';
 import { GuidesModule } from './modules/guides/guides.module';
+import { HealthModule } from './modules/health/health.module';
 import { HousekeepingModule } from './modules/housekeeping/housekeeping.module';
 import { ImagesModule } from './modules/images/images.module';
 import { PalettesModule } from './modules/palettes/palettes.module';
@@ -13,6 +14,7 @@ import { RenderModule } from './modules/render/render.module';
   imports: [
     ConfigModule,
     DbModule,
+    HealthModule,
     ImagesModule,
     PalettesModule,
     ProjectsModule,

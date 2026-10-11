@@ -18,3 +18,5 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Docker image builds
+        run: docker build -t sba:ci .

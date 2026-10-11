@@ -1,0 +1,35 @@
+# DigitalOcean App Platform spec. Create the app once with
+#   doctl apps create --spec .do/app.yaml
+# (or import this file in the control panel), then every push to `main` redeploys it.
+#
+# Data is ephemeral by design: the SQLite file, uploaded photos and generated PDFs live on the
+# container's disk and are gone when a deploy replaces it. Keep instance_count at 1; each
+# instance would otherwise have its own separate data.
+name: sba
+region: nyc
+services:
+  - name: web
+    github:
+      repo: bleauweb/SBA
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 3000
+    instance_count: 1
+    # apps-s-1vcpu-0.5gb is cheaper but can run out of memory decoding large photos.
+    instance_size_slug: apps-s-1vcpu-1gb
+    health_check:
+      http_path: /api/health
+      initial_delay_seconds: 10
+      period_seconds: 30
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: RETENTION_HOURS
+        value: "24"
+      # Set the real value in the control panel (App > Settings > web > Environment Variables).
+      # If it is left as the placeholder the server generates a random secret at boot, which
+      # only means ownership cookies stop matching after a restart.
+      - key: COOKIE_SECRET
+        type: SECRET
+        value: CHANGE_ME

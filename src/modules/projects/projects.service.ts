@@ -75,7 +75,7 @@ export class ProjectsService {
     const row = this.db.select().from(projects).where(eq(projects.id, id)).get();
     if (!row) throw new NotFoundException('project not found');
     const now = nowIso();
-    if (row.lastAccessedAt.slice(0, 10) !== now.slice(0, 10)) {
+    if (Date.parse(now) - Date.parse(row.lastAccessedAt) > 15 * 60 * 1000) {
       this.db.update(projects).set({ lastAccessedAt: now }).where(eq(projects.id, id)).run();
       row.lastAccessedAt = now;
     }
@@ -117,9 +117,9 @@ export class ProjectsService {
     await this.storage.removePrefix(`projects/${row.id}`);
   }
 
-  /** Deletes projects not opened for `days` days. Returns how many went. */
-  async deleteExpired(days: number): Promise<number> {
-    const cutoff = new Date(Date.now() - days * 24 * 3600 * 1000).toISOString();
+  /** Deletes projects not opened for `hours` hours. Returns how many went. */
+  async deleteExpired(hours: number): Promise<number> {
+    const cutoff = new Date(Date.now() - hours * 3600 * 1000).toISOString();
     const rows = this.db.select().from(projects).where(and(lt(projects.lastAccessedAt, cutoff))).all();
     for (const r of rows) await this.delete(r);
     return rows.length;
