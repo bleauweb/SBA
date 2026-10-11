@@ -8,9 +8,11 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends python3 make g++ \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-# The build needs devDependencies even when the platform injects NODE_ENV=production.
-ENV NODE_ENV=development
 COPY package.json package-lock.json ./
+# --include=dev: the build needs devDependencies even if the platform injects
+# NODE_ENV=production. Do NOT set NODE_ENV=development here: Vite would then compile the
+# React pages with the development JSX runtime against a production React build, and
+# server-side rendering fails at runtime with "jsxDEV is not a function".
 RUN npm ci --include=dev --no-audit --no-fund
 COPY . .
 RUN npm run build && npm prune --omit=dev
