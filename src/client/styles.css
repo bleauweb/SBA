@@ -31,7 +31,13 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 .thumb img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .thumb .t { padding: 8px 10px; font-size: 13px; }
 .editor { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
-@media (max-width: 860px) { .editor { grid-template-columns: 1fr; } }
+.editor > * { min-width: 0; } /* a wide chart must scroll inside its column, not widen the page */
+.page-head { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; }
+.title-input { font-size: 20px; font-weight: 600; border: 1px solid transparent; background: transparent; padding: 4px 6px; border-radius: 6px; min-width: 280px; font-family: inherit; color: inherit; }
+.title-input:focus { border-color: var(--line); background: #fff; outline: none; }
+.zoom { min-width: 140px; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.action-bar, .action-bar-spacer { display: none; }
 .field { display: block; margin-bottom: 12px; }
 .field > span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 3px; }
 .field input[type="number"], .field input[type="text"], .field select { width: 100%; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: #fff; }
@@ -46,7 +52,45 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 12px 0; }
 .stats div { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
 .stats b { display: block; font-size: 17px; }
-.share { font-size: 13px; word-break: break-all; }
+.share { font-size: 13px; }
+.share a { overflow-wrap: anywhere; }
 table.mat { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.mat th, table.mat td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
 table.mat td.num, table.mat th.num { text-align: right; }
+
+/* ---------- phones and small tablets ---------- */
+@media (max-width: 860px) {
+  main { padding: 12px; }
+  header.top { padding: 12px 14px; gap: 10px; }
+  header.top .tag { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .editor { grid-template-columns: 1fr; gap: 14px; }
+  /* chart first, settings below: the pattern is what people came to see */
+  .editor-main { order: 0; }
+  .editor-side { order: 1; }
+  .page-head { flex-direction: column; align-items: stretch; }
+  .title-input { min-width: 0; width: 100%; }
+  .head-actions .btn { flex: 1; text-align: center; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .chart-wrap { max-height: 65vh; }
+  .legend button { min-height: 36px; }
+  .btn { min-height: 40px; }
+  /* 16px inputs stop iOS Safari from zooming the page on focus */
+  input[type="text"], input[type="number"], select { font-size: 16px; }
+  table.mat { font-size: 13px; }
+  table.mat th, table.mat td { padding: 6px 5px; }
+  table.mat .col-finish { display: none; }
+  /* bottom action bar replaces the sidebar's generate button */
+  .side-generate { display: none; }
+  .action-bar-spacer { display: block; }
+  .action-bar {
+    display: flex; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line);
+  }
+  .action-bar .btn { flex: 1; text-align: center; padding: 12px; }
+  .action-bar .btn.primary { flex: 2; }
+  .action-bar-spacer { height: 84px; }
+}
+@media (max-width: 420px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}

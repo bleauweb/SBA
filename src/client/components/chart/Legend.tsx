@@ -17,13 +17,14 @@ export function Legend({ pattern, highlight, onToggle }: { pattern: Pattern; hig
 
 export function MaterialsTable({ pattern }: { pattern: Pattern }) {
   return (
+    <div className="table-wrap">
     <table className="mat">
       <thead>
         <tr>
           <th>Sym</th>
           <th>Code</th>
           <th>Colour</th>
-          <th>Finish</th>
+          <th className="col-finish">Finish</th>
           <th className="num">Beads</th>
           <th className="num">Grams</th>
           <th className="num">Tubes</th>
@@ -37,7 +38,7 @@ export function MaterialsTable({ pattern }: { pattern: Pattern }) {
             </td>
             <td>{l.bead.code}</td>
             <td>{l.bead.name}</td>
-            <td>{l.bead.finish}</td>
+            <td className="col-finish">{l.bead.finish}</td>
             <td className="num">{l.count}</td>
             <td className="num">{l.grams.toFixed(1)}</td>
             <td className="num">{l.tubes}</td>
@@ -45,5 +46,6 @@ export function MaterialsTable({ pattern }: { pattern: Pattern }) {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
